@@ -3,7 +3,11 @@ const multer = require('multer');
 const cors = require('cors');
 
 const app = express();
-app.use(express.static('public'));
+app.use(express.static('public', {
+    setHeaders: (res, path, status) => {
+        res.set('Content-Disposition', 'attachment');
+    }
+}));
 app.use(cors());
 
 const upload = multer({
