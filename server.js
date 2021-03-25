@@ -9,6 +9,7 @@ app.use(express.static('public', {
     }
 }));
 app.use(cors());
+app.disable('x-powered-by');
 
 const upload = multer({
     storage: multer.diskStorage({
