@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
+const { nanoid } = require('nanoid');
 
 const app = express();
 app.use(express.static('public', {
@@ -14,7 +15,7 @@ app.disable('x-powered-by');
 const upload = multer({
     storage: multer.diskStorage({
         destination: 'public/img/',
-        filename: (req, file, cb) => cb(null, `${file.originalname.split('.')[0]}-${Date.now()}.jpg`)
+        filename: (req, file, cb) => cb(null, `${nanoid(16)}.jpg`)
     })
 });
 
