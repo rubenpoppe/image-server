@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const { nanoid } = require('nanoid');
+const { unlink } = require('fs/promises');
 
 const app = express();
 app.use(express.static('public', {
@@ -21,6 +22,15 @@ const upload = multer({
 
 app.post('/upload', upload.array('images'), (req, res) => {
     res.status(200).json(req.files.map(x => ({ [x.originalname]: `/img/${x.filename}` })));
+});
+
+app.delete('/img/:path', async (req, res) => {
+    try {
+        await unlink(`public/img/${req.params.path}`);
+        res.status(204).json(`${req.params.path} deleted`);
+    } catch (err) {
+        res.status(500).json('something went wrong');
+    }    
 });
 
 app.listen(3001);
