@@ -3,6 +3,9 @@ const multer = require('multer');
 const cors = require('cors');
 const { nanoid } = require('nanoid');
 const { unlink } = require('fs/promises');
+const fs = require('fs');
+const https = require('https');
+require('dotenv').config();
 
 const app = express();
 app.use(
@@ -37,4 +40,19 @@ app.delete('/img/:path', async (req, res) => {
 	}
 });
 
-app.listen(process.env.PORT || 3001);
+if (process.env.HTTPS) {
+	const server = https.createServer(
+		{
+			cert: fs.readFileSync(process.env.CERT_PATH),
+			key: fs.readFileSync(process.env.KEY_PATH),
+			...(process.env.CA_CERT_PATH && {
+				ca: fs.readFileSync(process.env.CA_CERT_PATH),
+			}),
+		},
+		app
+	);
+
+	server.listen(process.env.PORT || 3001);
+} else {
+	app.listen(process.env.PORT || 3001);
+}
